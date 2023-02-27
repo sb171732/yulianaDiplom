@@ -43,6 +43,9 @@ export const store = new Vuex.Store({
         addNote: firestoreAction((context, payload) => {
             return db.collection('notes').add(payload)
         }),
+        addMessage: firestoreAction((context, payload) => {
+            return db.collection('messages').add(payload)
+        }),
         addRezults: firestoreAction((context, payload) => {
             return db.collection('rezult').add(payload)
         }),
