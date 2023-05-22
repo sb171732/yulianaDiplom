@@ -10,10 +10,9 @@ export const store = new Vuex.Store({
     state: {
         notes: [],
         users: [],
-        current_user:{
-          fio:'',
-          login:''
-        }
+        mes: [],
+        current_fio:''
+        
     },
     mutations: {
         ...vuexfireMutations,
@@ -23,9 +22,8 @@ export const store = new Vuex.Store({
        addCart(state,tovar){
             state.shopCart.push(tovar)
        },
-       updateCurr_user(state,{fio, login}){
-            state.current_user.fio = fio
-            state.current_user.login = login
+       updateCurr_user(state,fio){
+            state.current_fio = fio
        }
     },
     actions: {
@@ -34,6 +32,9 @@ export const store = new Vuex.Store({
         }),
         bindUsers: firestoreAction(({ bindFirestoreRef }) => {
             return bindFirestoreRef('users', db.collection('users'))
+        }),
+        bindM: firestoreAction(({ bindFirestoreRef }) => {
+            return bindFirestoreRef('mes', db.collection('messages').orderBy('now','asc'))
         }),
        
         Shopping: ({commit}, payload) => {
@@ -55,8 +56,8 @@ export const store = new Vuex.Store({
         addTovarKraski: firestoreAction((context, payload) => {
             return db.collection('tovar').add(payload)
         }),
-        deleteFromTovar: firestoreAction((context, payload) => {
-            db.collection('tovar')
+        deleteM: firestoreAction((context, payload) => {
+            db.collection('messages')
                 .doc(payload)
                 .delete()
         }),
@@ -65,8 +66,8 @@ export const store = new Vuex.Store({
                 .doc(id)
                 .update(doc)
         }),
-        updateCurrentUser({commit}, {fio, login}) {
-            commit('updateCurr_user',{fio, login})
+        updateCurrentUser({commit}, fio) {
+            commit('updateCurr_user',fio)
         },
         getLoginStatus({commit}){
             let vm = this
@@ -97,3 +98,4 @@ export const store = new Vuex.Store({
 
 store.dispatch('bindNotes')
 store.dispatch('bindUsers')
+store.dispatch('bindM')

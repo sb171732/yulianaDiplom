@@ -31,8 +31,11 @@ export default {
                     message: 'Правильно',
                     type: 'success'
                     });
-                this.$router.push({name:'about', params:{user:curr_user[0].fio}})
-                store.dispatch('updateCurrentUser',{ fio: curr_user[0].fio, login: curr_user[0].login  })
+                this.$router.push({name:'about', params:{user:curr_user[0].id}})
+                localStorage.setItem('curr_fio', curr_user[0].fio);
+                localStorage.setItem('curr_id', curr_user[0].id);
+                store.dispatch('updateCurrentUser', curr_user[0].fio)
+                // store.dispatch('updateCurrentUser',{ fio: curr_user[0].fio, login: curr_user[0].login  })
              } else {
                 
                 this.$notify({
@@ -50,7 +53,13 @@ export default {
                     });
         }
     }
+  },
+  created(){
+      if (localStorage.getItem('curr_fio')!=null){
+        this.$router.push({name:'about', params:{user:localStorage.getItem('curr_id')}})
+      }
   } 
+
 }
 </script>
 <style>

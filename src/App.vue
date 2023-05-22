@@ -6,7 +6,7 @@
       <el-col :span="6"><div class="w3-text-white">s</div> </el-col>
       <el-col :span="6" class="w3-padding">
          <i class="el-icon-user-solid" style="font-size: xxx-large;"></i>
-         <span >{{ Current_user.fio }} <router-link to="/login">Выход</router-link>  </span> 
+         <span >{{ Current_fio }} <el-link @click="logout()">Выход</el-link>  </span> 
       </el-col>
     </el-row>
     
@@ -21,7 +21,7 @@
                     background-color="#fff"
                     text-color="black"
                     active-text-color="#ffd04b">
-                    <el-menu-item v-for="f in Users" :key="f.id" :index="f.id" :route="{name:'about', params:{user:f.fio}}">
+                    <el-menu-item v-for="f in Users" :key="f.id" :index="f.id" :route="{name:'about', params:{user:f.id}}">
                       <template slot="title">
                         <i class="el-icon-user"></i>
                         <span>{{ f.fio }}</span>
@@ -66,15 +66,26 @@ export default {
     Users(){
       return store.state.users
     },
-    Current_user(){
-      return store.state.current_user
+    Current_fio(){
+      return store.state.current_fio
     }
   },
   methods:{
+    logout(){
+       localStorage.clear()
+       store.dispatch('updateCurrentUser','')
+       this.$router.push('/')
+
+    },
+         
     handleOpen(){
 
     }
-  } 
+  } ,
+  created(){
+    console.log(localStorage.getItem('curr_fio'))
+    store.dispatch('updateCurrentUser', localStorage.getItem('curr_fio'))
+  }
 }
 
 </script>
