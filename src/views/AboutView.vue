@@ -11,10 +11,10 @@
           <el-col class="w3-padding">
             <span v-for="m in getM()" :key="m.id" style="">
                   <p v-if="m.user_id!=$route.params.user" style="text-align: end;">{{ m.text }} <br> 
-                   <span style="color: gray; font-size: small;">{{ m.now }}</span>   <i style="cursor: pointer;" @click="del(m.id)" class="el-icon-delete-solid"></i>
+                   <span style="color: gray; font-size: small;">{{ getDate(m.now) }}</span>   <i style="cursor: pointer;" @click="del(m.id)" class="el-icon-delete-solid"></i>
                   </p>
                   <p v-if="m.user_id===$route.params.user" style="text-align: initial;">{{ m.text }} <br> 
-                   <span style="color: gray; font-size: small;">{{ m.now }}</span>   <i style="cursor: pointer;" @click="del(m.id)" class="el-icon-delete-solid"></i>
+                   <span style="color: gray; font-size: small;">{{ getDate(m.now) }}</span>   <i style="cursor: pointer;" @click="del(m.id)" class="el-icon-delete-solid"></i>
                   </p>
                  
             </span>
@@ -48,6 +48,12 @@ import {store} from '../store'
         
       } ,
       methods:{
+       getDate(date){
+        // var d = new Date(date);
+        // return d.toDateString()
+        return date.toDate()
+       },
+
         getM(){ return this.M.filter((n)=>{ 
           return (n.to_user_id.match(this.$route.params.user))&&(n.user_id.match(localStorage.getItem('curr_id')))||
                   (n.user_id.match(this.$route.params.user))&&(n.to_user_id.match(localStorage.getItem('curr_id')))
@@ -62,10 +68,15 @@ import {store} from '../store'
             let cu1 = localStorage.getItem('curr_id')
             let cu2 = this.$route.params.user
             
-            let now = firebase.firestore.Timestamp.now().seconds
+            // let now = firebase.firestore.Timestamp.now().seconds
+            const t = firebase.firestore.Timestamp.fromDate(new Date());
+
+// Timestamp to Date
+            const d = t.toDate();
+            console.log(d);
             // console.log(cu1[0].id)
             // console.log(cu2)
-            store.dispatch('addMessage', { text: this.text, user_id: cu1, to_user_id: cu2, now:now })
+            store.dispatch('addMessage', { text: this.text, user_id: cu1, to_user_id: cu2, now:d })
             this.text = ''
         },
         del(id){
